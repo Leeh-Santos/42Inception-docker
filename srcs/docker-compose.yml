@@ -1,0 +1,53 @@
+version: "3.3"
+
+volumes:
+  wordpress_data:
+  db_data:
+
+services:
+  wordpress:
+    build:
+      requirements/wordpress/
+    volumes:
+      - wordpress_data:/var/www/wordpress
+    environment:
+      - WORDPRESS_DB_HOST=mariadb
+      - WORDPRESS_DB_USER=${MYSQL_USER}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+      - WORDPRESS_DB_NAME=${MYSQL_DB}
+      - WORDPRESS_TABLE_PREFIX=wp_
+      - WORDPRESS_DEBUG=1
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - WP_ADMIN_N=${WP_ADMIN_N}
+      - WP_ADMIN_P=${WP_ADMIN_P}
+      - WP_TITLE=${WP_TITLE}
+      - WP_ADMIN_E=${WP_ADMIN_E}
+      - WP_U_NAME=${WP_U_NAME}
+      - WP_U_PASS=${WP_U_PASS}
+      - WP_U_EMAIL=${WP_U_EMAIL}
+    depends_on:
+      - mariadb
+
+  mariadb:
+    build:
+      requirements/mariadb/
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DB}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  nginx:
+    build:
+      requirements/nginx/
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - wordpress_data:/var/www/wordpress
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    depends_on:
+      - wordpress
