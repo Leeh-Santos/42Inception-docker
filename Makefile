@@ -1,25 +1,21 @@
-all: up
-
-up: build
-	
-	docker-compose -f ./srcs/docker-compose.yml up -d
-
-down:
-	docker-compose -f ./srcs/docker-compose.yml down
+all: build
 
 build:
-	clear
-	docker-compose -f ./srcs/docker-compose.yml build
+	docker compose -f srcs/docker-compose.yml up --build
 
-clean: down
-	@docker rm $$(docker ps -qa) || true
-	@docker rmi -f $$(docker images -qa) || true
-	@docker volume rm $$(docker volume ls -q) || true
-	@docker network rm $$(docker network ls -q) || true
+stop:
+	docker compose -f srcs/docker-compose.yml stop
 
-re: clean up
+remove:
+	docker compose -f srcs/docker-compose.yml down --rmi all --volumes
 
-prune: clean
-	@docker system prune -a --volumes -f
+#only if need full reset
+fullremove:
+	sudo rm -rf /home/gade-alm/data/mariadb/*
+	sudo rm -rf /home/gade-alm/data/wordpress/*
+	docker compose -f srcs/docker-compose.yml down --rmi all --volumes
+	docker system prune -a --volumes --force
+
+re:
 
 .PHONY: all up down build clean re prune
