@@ -1,10 +1,10 @@
-version: "3.3"
+version: "3.0"
 
 services:
   wordpress:
     build:
-      requirements/wordpress/
-    env_file :
+      context: requirements/wordpress/
+    env_file:
       - .env
     ports:
       - "9000:9000"
@@ -12,38 +12,37 @@ services:
       - mariadb
     volumes:
       - wordpress:/var/www/wordpress
-    networks :
+    networks:
       - inception
 
   mariadb:
     build:
-      requirements/mariadb/
+      context: requirements/mariadb/
     volumes:
       - mariadb:/var/lib/mysql
-    env_file :
+    env_file:
       - .env
     ports:
       - "3306:3306"
-    networks :
+    networks:
       - inception
 
   nginx:
     build:
-      requirements/nginx/
+      context: requirements/nginx/
     ports:
       - "443:443"
     volumes:
       - wordpress:/var/www/html
-    env_file :
+    env_file:
       - .env
     depends_on:
       - wordpress
-    networks :
+    networks:
       - inception
 
 networks:
   inception:
-    name: inception
     driver: bridge
 
 volumes:
@@ -60,4 +59,3 @@ volumes:
       type: 'none'
       o: 'bind'
       device: /home/learodri/data/mariadb
-
