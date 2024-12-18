@@ -1,10 +1,13 @@
 all: build
 
 build:
-	docker-compose -f srcs/docker-compose.yml up --build
+	docker-compose -f srcs/docker-compose.yml up --build -d
 
 stop:
 	docker-compose -f srcs/docker-compose.yml stop
+	
+start:
+	docker-compose -f srcs/docker-compose.yml start
 
 remove:
 	docker-compose -f srcs/docker-compose.yml down --rmi all --volumes
@@ -16,6 +19,6 @@ prune:
 	docker-compose -f srcs/docker-compose.yml down --rmi all --volumes
 	docker system prune -a --volumes --force
 
-re:
+re: remove build
 
-.PHONY: all up down build clean re prune
+.PHONY: all build stop start remove re prune

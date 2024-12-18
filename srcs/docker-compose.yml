@@ -2,6 +2,8 @@ version: "3.0"
 
 services:
   wordpress:
+    container_name: wordpress
+    image: wordpress
     build:
       context: requirements/wordpress/
     env_file:
@@ -16,6 +18,8 @@ services:
       - inception
 
   mariadb:
+    container_name: mariadb
+    image: mariadb
     build:
       context: requirements/mariadb/
     volumes:
@@ -28,6 +32,8 @@ services:
       - inception
 
   nginx:
+    container_name: nginx
+    image: nginx
     build:
       context: requirements/nginx/
     ports:
